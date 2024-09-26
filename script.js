@@ -1,7 +1,7 @@
 const gameboard = (function () {
 
     // Create our board as a 2D array
-    let cell = createCell();
+    
     let rows = 3;
     let columns = 3;
     let board = [];
@@ -9,6 +9,7 @@ const gameboard = (function () {
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
+            let cell = createCell();
             cell.addMarker(0);
             board[i].push(cell); // place cell in here later
         }
@@ -21,8 +22,8 @@ const gameboard = (function () {
         let y = prompt('Enter column 1 2 or 3: ');
 
         // Handles if position on board is available or not
-        if (board[x-1][y-1] === 0) {
-            board[x-1][y-1] = marker;
+        if (board[x-1][y-1].getValue() === 0) {
+            board[x-1][y-1].addMarker(marker);
         } else {
             alert('Position already taken. Please choose again');
             placeMarker(currentMarker);

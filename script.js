@@ -1,21 +1,20 @@
 const gameboard = (function () {
 
-    // Create our board as a 2D array
-    
     let rows = 3;
     let columns = 3;
     let board = [];
 
+    // Creates a 2D array (grid) for our game area.
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
             let cell = createCell();
             cell.addMarker(0);
-            board[i].push(cell); // place cell in here later
+            board[i].push(cell); 
         }
     }
 
-    const placeMarker = function(currentMarker) {
+    const placeMarker = function(player) {
 
         let marker = prompt('Enter x or o: ');
         let x = prompt('Enter row 1 2 or 3: ');
@@ -29,8 +28,10 @@ const gameboard = (function () {
             placeMarker(currentMarker);
         }
     }
+
+    // Returns the board as a 2D array filled with cell objects
     const getBoard = () => board;
-    
+
     const printBoard = () => {
         let mappedBoard = board.map((row) => {
             let mappedRow = row.map((item) => item.getValue())

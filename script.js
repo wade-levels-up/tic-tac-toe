@@ -32,6 +32,13 @@ const gameboard = (function () {
     return { placeMarker, getBoard, printBoard };
 })();
 
+function createCell() {
+    let value = 0;
+    const addMarker = (player) => { value = player; };
+    const getValue = () => value;
+    return { addMarker, getValue };
+}
+
 gameboard.printBoard();
 
 

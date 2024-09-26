@@ -1,6 +1,7 @@
 const gameboard = (function () {
 
     // Create our board as a 2D array
+    let cell = createCell();
     let rows = 3;
     let columns = 3;
     let board = [];
@@ -8,7 +9,8 @@ const gameboard = (function () {
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
-            board[i].push(0); // place cell in here later
+            cell.addMarker(0);
+            board[i].push(cell); // place cell in here later
         }
     }
 
@@ -27,7 +29,14 @@ const gameboard = (function () {
         }
     }
     const getBoard = () => board;
-    const printBoard = () => {console.table(board)};
+    const printBoard = () => {
+        let mappedBoard = [
+            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
+            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
+            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
+        ]
+        return console.table(mappedBoard);
+    };
 
     return { placeMarker, getBoard, printBoard };
 })();

@@ -31,9 +31,9 @@ const gameboard = (function () {
     const getBoard = () => board;
     const printBoard = () => {
         let mappedBoard = [
-            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
-            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
-            [board[0][0].getValue(), board[0][0].getValue(), board[0][0].getValue()],
+            board[0].map((item) => item.getValue()),
+            board[1].map((item) => item.getValue()),
+            board[2].map((item) => item.getValue()),
         ]
         return console.table(mappedBoard);
     };

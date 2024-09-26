@@ -29,12 +29,12 @@ const gameboard = (function () {
         }
     }
     const getBoard = () => board;
+    
     const printBoard = () => {
-        let mappedBoard = [
-            board[0].map((item) => item.getValue()),
-            board[1].map((item) => item.getValue()),
-            board[2].map((item) => item.getValue()),
-        ]
+        let mappedBoard = board.map((row) => {
+            let mappedRow = row.map((item) => item.getValue())
+            return mappedRow;
+        })
         return console.table(mappedBoard);
     };
 

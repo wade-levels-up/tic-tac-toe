@@ -71,9 +71,16 @@ const gameController = (function() {
     }
 
     function checkWinCondition() {
-        console.log('working');
         let board = gameboard.getBoard();
-        if (board[0][0].getValue() === 'x' && board[0][1].getValue() === 'x' && board[0][2].getValue() === 'x') {
+        let row1 = '';
+        let row2 = '';
+        let row3 = '';
+        for (let i = 0; i < 3; i++) {
+            row1 += board[0][i].getValue();
+            row2 += board[1][i].getValue(); 
+            row3 += board[1][i].getValue(); 
+        }
+        if (row1 === 'xxx' || row2 === 'xxx' || row3 === 'xxx') {
             alert(`${activePlayer} wins!`);
         }
     }
@@ -88,7 +95,7 @@ const gameController = (function() {
 
     function getActivePlayer() { return activePlayer; }
 
-    return { getActivePlayer, switchPlayerTurn, playRound }
+    return { getActivePlayer, playRound }
 })();
 
 gameboard.printBoard();

@@ -70,6 +70,8 @@ const gameController = (function() {
         playRound();
     }
 
+    let announceWinner = () => alert(`${activePlayer} wins!`);
+
     function checkWinCondition() {
         let board = gameboard.getBoard();
         // Looks through rows for 'xxx' or 'ooo'
@@ -77,14 +79,30 @@ const gameController = (function() {
             if ((board[row][0].getValue() === 'x' && board[row][1].getValue() === 'x' && board[row][2].getValue() === 'x')
                 || (board[row][0].getValue() === 'o' && board[row][1].getValue() === 'o' && board[row][2].getValue() === 'o')) 
             {
-                alert(`${activePlayer} wins!`) 
+                announceWinner() 
             }
         }
         // Looks through columns for 'xxx' or 'ooo'
         for (let i = 0; i < 3; i++) {
             if (board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x') {
-                alert(`${activePlayer} wins!`);
+                announceWinner();
             }
+        }
+
+        // Looks for diagonal win conditions
+        switch (true) {
+            case (board[0][0].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][2].getValue() === 'x'):
+                announceWinner();
+                break
+            case (board[0][2].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][0].getValue() === 'x'):
+                announceWinner();
+                break
+            case (board[0][0].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][2].getValue() === 'o'):
+                announceWinner();
+                break
+            case (board[0][2].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][0].getValue() === 'o'):
+                announceWinner();
+                break
         }
     }
 

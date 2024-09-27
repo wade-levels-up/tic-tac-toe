@@ -16,7 +16,12 @@ const gameboard = (function () {
 
     const placeMarker = function(player) {
 
-        let marker = prompt('Enter x or o: ');
+        let marker = '';
+        if (player === 'player 1') {
+            marker = 'x';
+        } else if (player === 'player 2') {
+            marker = 'o';
+        } 
         let x = prompt('Enter row 1 2 or 3: ');
         let y = prompt('Enter column 1 2 or 3: ');
 
@@ -50,7 +55,44 @@ function createCell() {
     return { addMarker, getValue };
 }
 
+const gameController = (function() {
+
+    let player1 = 'player 1';
+    let player2 = 'player 2';
+    let activePlayer = player1;
+
+    function playRound() {
+        console.log(`It's ${activePlayer}'s turn`);
+        gameboard.placeMarker(activePlayer);
+        gameboard.printBoard();
+        checkWinCondition();
+        switchPlayerTurn();
+        playRound();
+    }
+
+    function checkWinCondition() {
+        console.log('working');
+        let board = gameboard.getBoard();
+        if (board[0][0].getValue() === 'x' && board[0][1].getValue() === 'x' && board[0][2].getValue() === 'x') {
+            alert(`${activePlayer} wins!`);
+        }
+    }
+
+    function switchPlayerTurn() {
+        if (activePlayer === player1) {
+            activePlayer = player2;
+        } else if (activePlayer === player2) {
+            activePlayer = player1;
+        }
+    }
+
+    function getActivePlayer() { return activePlayer; }
+
+    return { getActivePlayer, switchPlayerTurn, playRound }
+})();
+
 gameboard.printBoard();
+
 
 
 

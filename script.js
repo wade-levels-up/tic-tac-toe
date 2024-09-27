@@ -72,16 +72,19 @@ const gameController = (function() {
 
     function checkWinCondition() {
         let board = gameboard.getBoard();
-        let row1 = '';
-        let row2 = '';
-        let row3 = '';
-        for (let i = 0; i < 3; i++) {
-            row1 += board[0][i].getValue();
-            row2 += board[1][i].getValue(); 
-            row3 += board[1][i].getValue(); 
+        // Looks through rows for 'xxx' or 'ooo'
+        for (row in board) {
+            if ((board[row][0].getValue() === 'x' && board[row][1].getValue() === 'x' && board[row][2].getValue() === 'x')
+                || (board[row][0].getValue() === 'o' && board[row][1].getValue() === 'o' && board[row][2].getValue() === 'o')) 
+            {
+                alert(`${activePlayer} wins!`) 
+            }
         }
-        if (row1 === 'xxx' || row2 === 'xxx' || row3 === 'xxx') {
-            alert(`${activePlayer} wins!`);
+        // Looks through columns for 'xxx' or 'ooo'
+        for (let i = 0; i < 3; i++) {
+            if (board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x') {
+                alert(`${activePlayer} wins!`);
+            }
         }
     }
 

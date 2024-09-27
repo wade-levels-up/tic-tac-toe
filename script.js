@@ -4,15 +4,17 @@ const gameboard = (function () {
     let columns = 3;
     let board = [];
 
-    // Creates a 2D array (grid) for our game area.
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-        for (let j = 0; j < columns; j++) {
-            let cell = createCell();
-            cell.addMarker(0);
-            board[i].push(cell); 
+     const setBoard = function() {
+        // Creates a 2D array (grid) for our game area.
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < columns; j++) {
+                let cell = createCell();
+                cell.addMarker(0);
+                board[i].push(cell); 
+            }
         }
-    }
+     }
 
     const placeMarker = function(player) {
 
@@ -45,7 +47,7 @@ const gameboard = (function () {
         return console.table(mappedBoard);
     };
 
-    return { placeMarker, getBoard, printBoard };
+    return { placeMarker, getBoard, printBoard, setBoard };
 })();
 
 function createCell() {
@@ -60,17 +62,31 @@ const gameController = (function() {
     let player1 = 'player 1';
     let player2 = 'player 2';
     let activePlayer = player1;
+    let gameWon = false;
+
+    function startGame() {
+        gameboard.setBoard();
+        gameboard.printBoard();
+        playRound();
+    }
 
     function playRound() {
         console.log(`It's ${activePlayer}'s turn`);
         gameboard.placeMarker(activePlayer);
         gameboard.printBoard();
         checkWinCondition();
-        switchPlayerTurn();
-        playRound();
+        if (gameWon === true) {
+            gameWon = false;
+        } else {
+            switchPlayerTurn();
+            playRound();
+        }
     }
 
-    let announceWinner = () => alert(`${activePlayer} wins!`);
+    function gameOver() {
+        alert(`${activePlayer} wins!`);
+        gameboard.setBoard();
+    }
 
     function checkWinCondition() {
         let board = gameboard.getBoard();
@@ -79,29 +95,29 @@ const gameController = (function() {
             if ((board[row][0].getValue() === 'x' && board[row][1].getValue() === 'x' && board[row][2].getValue() === 'x')
                 || (board[row][0].getValue() === 'o' && board[row][1].getValue() === 'o' && board[row][2].getValue() === 'o')) 
             {
-                announceWinner() 
+                gameOver(); gameWon = true; 
             }
         }
         // Looks through columns for 'xxx' or 'ooo'
         for (let i = 0; i < 3; i++) {
             if (board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x') {
-                announceWinner();
+                gameOver(); ; gameWon = true; 
             }
         }
 
         // Looks for diagonal win conditions
         switch (true) {
             case (board[0][0].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][2].getValue() === 'x'):
-                announceWinner();
+                gameOver(); ; gameWon = true; 
                 break
             case (board[0][2].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][0].getValue() === 'x'):
-                announceWinner();
+                gameOver(); ; gameWon = true; 
                 break
             case (board[0][0].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][2].getValue() === 'o'):
-                announceWinner();
+                gameOver(); ; gameWon = true; 
                 break
             case (board[0][2].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][0].getValue() === 'o'):
-                announceWinner();
+                gameOver(); ; gameWon = true; 
                 break
         }
     }
@@ -116,10 +132,11 @@ const gameController = (function() {
 
     function getActivePlayer() { return activePlayer; }
 
-    return { getActivePlayer, playRound }
+    return { getActivePlayer, playRound, startGame }
 })();
 
-gameboard.printBoard();
+gameController.startGame
+
 
 
 

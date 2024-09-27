@@ -19,20 +19,27 @@ const gameboard = (function () {
     const placeMarker = function(player) {
 
         let marker = '';
-        if (player === 'player 1') {
-            marker = 'x';
-        } else if (player === 'player 2') {
-            marker = 'o';
-        } 
-        let x = prompt('Enter row 1 2 or 3: ');
-        let y = prompt('Enter column 1 2 or 3: ');
+        let state = true;
+        const validXYInput = ['1','2','3'];
 
-        // Handles if position on board is available or not
-        if (board[x-1][y-1].getValue() === 0) {
-            board[x-1][y-1].addMarker(marker);
-        } else {
-            alert('Position already taken. Please choose again');
-            placeMarker(currentMarker);
+        while (state) {
+            if (player === 'player 1') {
+                marker = 'x';
+            } else if (player === 'player 2') {
+                marker = 'o';
+            } 
+            let x = prompt('Enter row 1 2 or 3: ');
+            let y = prompt('Enter column 1 2 or 3: ');
+    
+            // Handles if position on board is available or not
+            if (validXYInput.includes(x) && validXYInput.includes(y)) {
+                if (board[x-1][y-1].getValue() === 0) {
+                    board[x-1][y-1].addMarker(marker);
+                    state = false;
+                } else {
+                    alert('Position already taken. Please choose again');
+                }
+            }
         }
     }
 
@@ -134,8 +141,6 @@ const gameController = (function() {
 
     return { getActivePlayer, playRound, startGame }
 })();
-
-gameController.startGame
 
 
 

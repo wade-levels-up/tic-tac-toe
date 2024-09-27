@@ -95,9 +95,10 @@ const gameController = (function() {
         if (draw) {
             alert('Game was a draw - No winner');
             draw = false;
+        } else {
+            alert(`${activePlayer} wins!`);
+            gameboard.setBoard();
         }
-        alert(`${activePlayer} wins!`);
-        gameboard.setBoard();
     }
 
     function checkWinCondition() {
@@ -133,6 +134,17 @@ const gameController = (function() {
                 break
         }
 
+        // Check for draw
+        let mappedBoard = gameboard.getBoard().map((row) => {
+            let mappedRow = row.map((item) => item.getValue())
+            return mappedRow;
+        })
+        let flatBoard = mappedBoard.flat();
+        if (!flatBoard.includes(0)) {
+            draw = true;
+            roundOver = true;
+            gameOver();
+        }
     }
 
     function switchPlayerTurn() {

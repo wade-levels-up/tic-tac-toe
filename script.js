@@ -178,7 +178,11 @@ const displayController = (function() {
 
     function populateGrid() {
         for (let i = 0; i < 9; i++) {
-            cellListDOM[i].textContent = `${flatBoard[i]}`;
+            if (flatBoard[i] === 0) {
+                cellListDOM[i].textContent = '';
+            } else {
+                cellListDOM[i].textContent = `${flatBoard[i]}`;
+            }
         }
     }
 

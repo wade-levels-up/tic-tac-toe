@@ -16,7 +16,6 @@ const gameboard = (function () {
         }
      }
 
-     window.addEventListener('DOMContentLoaded', setBoard());
 
     validMoveMade = false;
 
@@ -29,8 +28,11 @@ const gameboard = (function () {
 
         if      (player === 'player 1') { marker = 'x'; } 
         else if (player === 'player 2') { marker = 'o'; } 
-        let x = xPos - 1; 
-        let y = yPos - 1;
+        let x = +xPos - 1; 
+        let y = +yPos - 1;
+
+        console.log([x,y]);
+        console.log(board[x][y].getValue());
 
         // Handles if position on board is available or not
         if (board[x][y].getValue() === 0) {
@@ -75,14 +77,12 @@ const gameController = (function() {
 
     function startGame(xPos, yPos) {
         gameboard.setBoard();
-        gameboard.printBoard();
     }
 
     function playRound(xPos, yPos) {
         gameboard.placeMarker(activePlayer, xPos, yPos);
         let validMove = gameboard.getValidMove();
         if (validMove) {
-            gameboard.printBoard();
             checkWinCondition();
             if (roundOver === true) {
                 roundOver = false;
@@ -166,8 +166,8 @@ const gameController = (function() {
 // Controls what is displayed in HTML and the DOM
 const displayController = (function() {
     
-    const gameboardDOM = document.querySelector('#gameboard');
-    const cellListDOM = Array.from(document.querySelectorAll('.cell'));
+    let gameboardDOM = document.querySelector('#gameboard');
+    let cellListDOM = Array.from(document.querySelectorAll('.cell'));
     let flatBoard;
     let gameStateDisp = document.querySelector('#game-state');
 
@@ -197,9 +197,11 @@ const displayController = (function() {
         if (e.target.getAttribute('class') === 'cell') {
             let row = e.target.getAttribute('data-row');
             let col = e.target.getAttribute('data-col');
+            console.log(`Event listener received row/col: ${row}/${col}`);
+            console.log(`Clicked element:`, e.target);
             gameController.playRound(row, col);
-            displayController.processBoardIntoFlat();
-            displayController.populateGrid();
+            processBoardIntoFlat();
+            populateGrid();
         }
     })
     
@@ -212,7 +214,6 @@ button.addEventListener('click', ()=> {
     gameboard.setBoard();
     displayController.processBoardIntoFlat();
     displayController.populateGrid();
-    displayController.disableBoard();
 })
 
 displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);

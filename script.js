@@ -16,7 +16,9 @@ const gameboard = (function () {
         }
      }
 
-    const placeMarker = function(player) {
+     window.addEventListener('DOMContentLoaded', setBoard());
+
+    const placeMarker = function(player, xPos, yPos) {
 
         let marker = '';
         let state = true;
@@ -28,8 +30,8 @@ const gameboard = (function () {
             } else if (player === 'player 2') {
                 marker = 'o';
             } 
-            let x = prompt('Enter row 1 2 or 3: ');
-            let y = prompt('Enter column 1 2 or 3: ');
+            let x = xPos//prompt('Enter row 1 2 or 3: ');
+            let y = yPos//prompt('Enter column 1 2 or 3: ');
     
             // Handles if position on board is available or not
             if (validXYInput.includes(x) && validXYInput.includes(y)) {
@@ -72,22 +74,19 @@ const gameController = (function() {
     let roundOver = false;
     let draw = false;
 
-    function startGame() {
+    function startGame(xPos, yPos) {
         gameboard.setBoard();
-        // gameboard.printBoard();
-        // playRound();
+        gameboard.printBoard();
     }
 
-    function playRound() {
-        console.log(`It's ${activePlayer}'s turn`);
-        gameboard.placeMarker(activePlayer);
+    function playRound(xPos, yPos) {
+        gameboard.placeMarker(activePlayer, xPos, yPos);
         gameboard.printBoard();
         checkWinCondition();
         if (roundOver === true) {
             roundOver = false;
         } else {
             switchPlayerTurn();
-            playRound();
         }
     }
 
@@ -161,12 +160,13 @@ const gameController = (function() {
 })();
 
 
-
+// Controls what is displayed in HTML and the DOM
 const displayController = (function() {
     
     const gameboardDOM = document.querySelector('#gameboard');
     const cellListDOM = Array.from(document.querySelectorAll('.cell'));
     let flatBoard;
+    let gameStateDisp = document.querySelector('#game-state');
 
     function processBoardIntoFlat() {
         let mappedBoard = gameboard.getBoard().map((row) => {
@@ -176,19 +176,36 @@ const displayController = (function() {
         flatBoard = mappedBoard.flat();
     }
 
-
     function populateGrid() {
         for (let i = 0; i < 9; i++) {
             cellListDOM[i].textContent = `${flatBoard[i]}`;
         }
     }
+
+    const setGameStateDisplay = function(text) {
+        gameStateDisp.textContent = text;
+    }
+
+    gameboardDOM.addEventListener('click', (e)=>{
+        if (e.target.getAttribute('class') === 'cell') {
+            let row = e.target.getAttribute('data-row');
+            let col = e.target.getAttribute('data-col');
+            gameController.playRound(row, col);
+            displayController.processBoardIntoFlat();
+            displayController.populateGrid();
+            setGameStateDisplay(`It's ${gameController.getActivePlayer()}'s turn`);
+        }
+    })
     
-    return { populateGrid, processBoardIntoFlat };
+    return { populateGrid, processBoardIntoFlat, setGameStateDisplay };
 })();
 
+displayController.setGameStateDisplay(`It's ${gameController.getActivePlayer()}'s turn`);
 gameController.startGame();
 displayController.processBoardIntoFlat();
 displayController.populateGrid();
+
+
 
 
 

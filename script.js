@@ -26,8 +26,8 @@ const gameboard = (function () {
         let marker = '';
         const validXYInput = ['1','2','3'];
 
-        if      (player === 'player 1') { marker = 'x'; } 
-        else if (player === 'player 2') { marker = 'o'; } 
+        if      (player.id === 'player 1') { marker = 'x'; } 
+        else if (player.id === 'player 2') { marker = 'o'; } 
         let x = +xPos - 1; 
         let y = +yPos - 1;
 
@@ -69,11 +69,16 @@ function createCell() {
 // GAME CONTROLLER
 const gameController = (function() {
 
-    let player1 = 'player 1';
-    let player2 = 'player 2';
-    let activePlayer = player1;
+    let p1 = { id: 'player 1', name: 'player 1'};
+    let p2 = { id: 'player 2', name: 'player 2'};
+    let activePlayer = p1;
     let roundOver = false;
     let draw = false;
+
+    function setPlayerNames() {
+        p1.name = displayController.getPlayerName('p1');
+        p2.name = displayController.getPlayerName('p2');
+    }
 
     function startGame(xPos, yPos) {
         gameboard.setBoard();
@@ -88,7 +93,7 @@ const gameController = (function() {
                 roundOver = false;
             } else {
                 switchPlayerTurn();
-                displayController.setGameStateDisplay(`It's ${getActivePlayer()}'s turn`);
+                displayController.setGameStateDisplay(`It's ${getActivePlayer().name}'s turn`);
             }
         }  
     }
@@ -98,7 +103,7 @@ const gameController = (function() {
             displayController.setGameStateDisplay('Draw!');
             draw = false;
         } else {
-            displayController.setGameStateDisplay(`${activePlayer} wins!`);
+            displayController.setGameStateDisplay(`${activePlayer.name} wins!`);
         }
     }
 
@@ -169,16 +174,16 @@ const gameController = (function() {
     }
 
     function switchPlayerTurn() {
-        if (activePlayer === player1) {
-            activePlayer = player2;
-        } else if (activePlayer === player2) {
-            activePlayer = player1;
+        if (activePlayer === p1) {
+            activePlayer = p2;
+        } else if (activePlayer === p2) {
+            activePlayer = p1;
         }
     }
 
     function getActivePlayer() { return activePlayer; }
 
-    return { getActivePlayer, playRound, startGame, }
+    return { getActivePlayer, playRound, startGame, setPlayerNames }
 })();
 
 
@@ -191,11 +196,22 @@ const displayController = (function() {
     let gameStateDisp = document.querySelector('#game-state');
     const startBtn = document.querySelector('#start');
     const nameInp = document.querySelector('#name-input');
+    const p1Input = document.querySelector('#p1name');
+    const p2Input = document.querySelector('#p2name');
+    let p1name = 'player 1';
+    let p2name = 'player 2';
 
     startBtn.addEventListener('click', ()=>{
         nameInp.style.visibility = 'hidden';
-        displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`)
+        if (!p1Input.value.split('').includes(' ') && p1Input.value) { p1name = p1Input.value; gameController.setPlayerNames(); }
+        if (!p2Input.value.split('').includes(' ') && p2Input.value) { p2name = p2Input.value; gameController.setPlayerNames(); }
+        displayController.setGameStateDisplay(`${gameController.getActivePlayer().name} goes first`)
     })
+
+    function getPlayerName(player) {
+        if (player === 'p1') { return p1name; } 
+        if (player === 'p2') { return p2name; }
+    }
 
     function processBoardIntoFlat() {
         let mappedBoard = gameboard.getBoard().map((row) => {
@@ -223,24 +239,24 @@ const displayController = (function() {
         if (e.target.getAttribute('class') === 'cell') {
             let row = e.target.getAttribute('data-row');
             let col = e.target.getAttribute('data-col');
-            console.log(`Event listener received row/col: ${row}/${col}`);
-            console.log(`Clicked element:`, e.target);
             gameController.playRound(row, col);
             processBoardIntoFlat();
             populateGrid();
         }
     })
-    
-    return { populateGrid, processBoardIntoFlat, setGameStateDisplay };
-})();
 
-const button = document.querySelector('#playAgain');
-button.addEventListener('click', ()=> {
-    displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
+    const button = document.querySelector('#playAgain');
+    button.addEventListener('click', ()=> {
+    displayController.setGameStateDisplay(`${gameController.getActivePlayer().name} goes first`);
     gameboard.setBoard();
     displayController.processBoardIntoFlat();
     displayController.populateGrid();
 })
+
+    
+    return { populateGrid, processBoardIntoFlat, setGameStateDisplay, getPlayerName };
+})();
+
 
 
 //displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);

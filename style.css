@@ -116,4 +116,6 @@ input {
 button {
     padding: 3px;
     border-radius: 5px;
+    min-height: 22px;
+    min-width: 22px;
 }

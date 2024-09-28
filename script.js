@@ -39,7 +39,7 @@ const gameboard = (function () {
             board[x][y].addMarker(marker);
             validMoveMade = true;
         } else {
-            displayController.setGameStateDisplay('Position already taken. Please choose again');
+            displayController.setGameStateDisplay('Try another spot...');
             validMoveMade = false;
         }
     }
@@ -189,6 +189,13 @@ const displayController = (function() {
     let cellListDOM = Array.from(document.querySelectorAll('.cell'));
     let flatBoard;
     let gameStateDisp = document.querySelector('#game-state');
+    const startBtn = document.querySelector('#start');
+    const nameInp = document.querySelector('#name-input');
+
+    startBtn.addEventListener('click', ()=>{
+        nameInp.style.visibility = 'hidden';
+        displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`)
+    })
 
     function processBoardIntoFlat() {
         let mappedBoard = gameboard.getBoard().map((row) => {
@@ -227,7 +234,7 @@ const displayController = (function() {
     return { populateGrid, processBoardIntoFlat, setGameStateDisplay };
 })();
 
-const button = document.querySelector('button');
+const button = document.querySelector('#playAgain');
 button.addEventListener('click', ()=> {
     displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
     gameboard.setBoard();
@@ -235,7 +242,8 @@ button.addEventListener('click', ()=> {
     displayController.populateGrid();
 })
 
-displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
+
+//displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
 gameController.startGame();
 displayController.processBoardIntoFlat();
 displayController.populateGrid();

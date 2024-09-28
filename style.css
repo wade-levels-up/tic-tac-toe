@@ -24,7 +24,7 @@ body {
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: darkslategrey;
+    background-color: rgb(90, 104, 104);
 }
 
 main {
@@ -47,7 +47,7 @@ main {
     align-items: center;
 }
 
-button {
+#playAgain {
     width: 100px;
     margin: 30px;
     padding: 5px 15px;
@@ -82,9 +82,38 @@ footer {
     font-size: 4rem;
 }
 
+.cell:hover {
+    background-color: rgb(108, 125, 125);
+}
+
 #game-state {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 2rem;
     text-align: center;
-    margin-top: 50px;
+    margin-top: 15px;
+}
+
+input {
+    width: 100px;
+}
+
+#name-input {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgb(0, 0, 0, 0.9);
+    color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 15px;
+}
+
+button {
+    padding: 3px;
+    border-radius: 5px;
 }

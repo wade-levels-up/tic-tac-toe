@@ -27,6 +27,7 @@ body {
 }
 
 main {
+    padding-top: 50px;
     flex-grow: 1;
 }
 
@@ -43,5 +44,11 @@ main {
     justify-content: center;
     align-items: center;
     border: 1px solid black;
-    font-size: 5rem;
+    font-size: 1rem;
+}
+
+footer {
+    border-top: 3px ridge black;
+    width: 100%;
+    text-align: center;
 }

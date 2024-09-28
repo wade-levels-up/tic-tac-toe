@@ -161,9 +161,22 @@ const gameController = (function() {
 })();
 
 const displayController = (function() {
-    const domCache = {
-        gameboard: document.querySelector('#gameboard'),
+    
+    const gameboardDOM = document.querySelector('#gameboard');
+    const cellListDOM = Array.from(document.querySelectorAll('.cell'));
+    let mappedBoard = gameboard.getBoard().map((row) => {
+        let mappedRow = row.map((item) => item.getValue())
+        return mappedRow;
+    })
+    let flatBoard = mappedBoard.flat();
+
+    function populateGrid() {
+        for (let i = 0; i < 9; i++) {
+            cellListDOM[i].textContent = `${flatBoard[i]}`;
+        }
     }
+    
+    return { populateGrid };
 })();
 
 

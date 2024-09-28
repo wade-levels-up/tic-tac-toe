@@ -74,8 +74,8 @@ const gameController = (function() {
 
     function startGame() {
         gameboard.setBoard();
-        gameboard.printBoard();
-        playRound();
+        // gameboard.printBoard();
+        // playRound();
     }
 
     function playRound() {
@@ -160,15 +160,22 @@ const gameController = (function() {
     return { getActivePlayer, playRound, startGame }
 })();
 
+
+
 const displayController = (function() {
     
     const gameboardDOM = document.querySelector('#gameboard');
     const cellListDOM = Array.from(document.querySelectorAll('.cell'));
-    let mappedBoard = gameboard.getBoard().map((row) => {
-        let mappedRow = row.map((item) => item.getValue())
-        return mappedRow;
-    })
-    let flatBoard = mappedBoard.flat();
+    let flatBoard;
+
+    function processBoardIntoFlat() {
+        let mappedBoard = gameboard.getBoard().map((row) => {
+            let mappedRow = row.map((item) => item.getValue())
+            return mappedRow;
+        })
+        flatBoard = mappedBoard.flat();
+    }
+
 
     function populateGrid() {
         for (let i = 0; i < 9; i++) {
@@ -176,8 +183,12 @@ const displayController = (function() {
         }
     }
     
-    return { populateGrid };
+    return { populateGrid, processBoardIntoFlat };
 })();
+
+gameController.startGame();
+displayController.processBoardIntoFlat();
+displayController.populateGrid();
 
 
 

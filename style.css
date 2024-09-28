@@ -39,6 +39,19 @@ main {
     overflow: hidden;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    width: 100px;
+    margin: 30px;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
 #gameboard li {
     display: flex;
     justify-content: center;

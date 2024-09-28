@@ -18,30 +18,27 @@ const gameboard = (function () {
 
      window.addEventListener('DOMContentLoaded', setBoard());
 
+    validMoveMade = false;
+
+    const getValidMove = function() { return validMoveMade };
+
     const placeMarker = function(player, xPos, yPos) {
 
         let marker = '';
-        let state = true;
         const validXYInput = ['1','2','3'];
 
-        while (state) {
-            if (player === 'player 1') {
-                marker = 'x';
-            } else if (player === 'player 2') {
-                marker = 'o';
-            } 
-            let x = xPos//prompt('Enter row 1 2 or 3: ');
-            let y = yPos//prompt('Enter column 1 2 or 3: ');
-    
-            // Handles if position on board is available or not
-            if (validXYInput.includes(x) && validXYInput.includes(y)) {
-                if (board[x-1][y-1].getValue() === 0) {
-                    board[x-1][y-1].addMarker(marker);
-                    state = false;
-                } else {
-                    alert('Position already taken. Please choose again');
-                }
-            }
+        if      (player === 'player 1') { marker = 'x'; } 
+        else if (player === 'player 2') { marker = 'o'; } 
+        let x = xPos - 1; 
+        let y = yPos - 1;
+
+        // Handles if position on board is available or not
+        if (board[x][y].getValue() === 0) {
+            board[x][y].addMarker(marker);
+            validMoveMade = true;
+        } else {
+            displayController.setGameStateDisplay('Position already taken. Please choose again');
+            validMoveMade = false;
         }
     }
 
@@ -56,7 +53,7 @@ const gameboard = (function () {
         return console.table(mappedBoard);
     };
 
-    return { placeMarker, getBoard, printBoard, setBoard };
+    return { placeMarker, getBoard, printBoard, setBoard, getValidMove };
 })();
 
 function createCell() {
@@ -66,6 +63,8 @@ function createCell() {
     return { addMarker, getValue };
 }
 
+
+// GAME CONTROLLER
 const gameController = (function() {
 
     let player1 = 'player 1';
@@ -81,22 +80,25 @@ const gameController = (function() {
 
     function playRound(xPos, yPos) {
         gameboard.placeMarker(activePlayer, xPos, yPos);
-        gameboard.printBoard();
-        checkWinCondition();
-        if (roundOver === true) {
-            roundOver = false;
-        } else {
-            switchPlayerTurn();
-        }
+        let validMove = gameboard.getValidMove();
+        if (validMove) {
+            gameboard.printBoard();
+            checkWinCondition();
+            if (roundOver === true) {
+                roundOver = false;
+            } else {
+                switchPlayerTurn();
+                displayController.setGameStateDisplay(`It's ${getActivePlayer()}'s turn`);
+            }
+        }  
     }
 
     function gameOver() {
         if (draw) {
-            alert('Game was a draw - No winner');
+            displayController.setGameStateDisplay('Game was a draw - No winner');
             draw = false;
         } else {
-            alert(`${activePlayer} wins!`);
-            gameboard.setBoard();
+            displayController.setGameStateDisplay(`${activePlayer} wins!`);
         }
     }
 
@@ -112,7 +114,8 @@ const gameController = (function() {
         }
         // Looks through columns for 'xxx' or 'ooo'
         for (let i = 0; i < 3; i++) {
-            if (board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x') {
+            if ((board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x')
+                || (board[0][i].getValue() === 'o' && board[1][i].getValue() === 'o' && board[2][i].getValue() === 'o')) {
                 gameOver(); ; roundOver = true; 
             }
         }
@@ -156,7 +159,7 @@ const gameController = (function() {
 
     function getActivePlayer() { return activePlayer; }
 
-    return { getActivePlayer, playRound, startGame }
+    return { getActivePlayer, playRound, startGame, }
 })();
 
 
@@ -197,14 +200,22 @@ const displayController = (function() {
             gameController.playRound(row, col);
             displayController.processBoardIntoFlat();
             displayController.populateGrid();
-            setGameStateDisplay(`It's ${gameController.getActivePlayer()}'s turn`);
         }
     })
     
     return { populateGrid, processBoardIntoFlat, setGameStateDisplay };
 })();
 
-displayController.setGameStateDisplay(`It's ${gameController.getActivePlayer()}'s turn`);
+const button = document.querySelector('button');
+button.addEventListener('click', ()=> {
+    displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
+    gameboard.setBoard();
+    displayController.processBoardIntoFlat();
+    displayController.populateGrid();
+    displayController.disableBoard();
+})
+
+displayController.setGameStateDisplay(`${gameController.getActivePlayer()} goes first`);
 gameController.startGame();
 displayController.processBoardIntoFlat();
 displayController.populateGrid();

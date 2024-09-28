@@ -31,9 +31,6 @@ const gameboard = (function () {
         let x = +xPos - 1; 
         let y = +yPos - 1;
 
-        console.log([x,y]);
-        console.log(board[x][y].getValue());
-
         // Handles if position on board is available or not
         if (board[x][y].getValue() === 0) {
             board[x][y].addMarker(marker);
@@ -69,8 +66,8 @@ function createCell() {
 // GAME CONTROLLER
 const gameController = (function() {
 
-    let p1 = { id: 'player 1', name: 'player 1'};
-    let p2 = { id: 'player 2', name: 'player 2'};
+    let p1 = { id: 'player 1', name: 'Player 1'};
+    let p2 = { id: 'player 2', name: 'Player 2'};
     let activePlayer = p1;
     let roundOver = false;
     let draw = false;
@@ -102,8 +99,10 @@ const gameController = (function() {
         if (draw) {
             displayController.setGameStateDisplay('Draw!');
             draw = false;
+            displayController.setPlayEnabled(false);
         } else {
             displayController.setGameStateDisplay(`${activePlayer.name} wins!`);
+            displayController.setPlayEnabled(false);
         }
     }
 
@@ -198,8 +197,11 @@ const displayController = (function() {
     const nameInp = document.querySelector('#name-input');
     const p1Input = document.querySelector('#p1name');
     const p2Input = document.querySelector('#p2name');
-    let p1name = 'player 1';
-    let p2name = 'player 2';
+    let p1name = 'Player 1';
+    let p2name = 'Player 2';
+    let playEnabled = true;
+
+    function setPlayEnabled(bool) { playEnabled = bool };
 
     startBtn.addEventListener('click', ()=>{
         nameInp.style.visibility = 'hidden';
@@ -236,17 +238,20 @@ const displayController = (function() {
     }
 
     gameboardDOM.addEventListener('click', (e)=>{
-        if (e.target.getAttribute('class') === 'cell') {
-            let row = e.target.getAttribute('data-row');
-            let col = e.target.getAttribute('data-col');
-            gameController.playRound(row, col);
-            processBoardIntoFlat();
-            populateGrid();
+        if (playEnabled) {
+            if (e.target.getAttribute('class') === 'cell') {
+                let row = e.target.getAttribute('data-row');
+                let col = e.target.getAttribute('data-col');
+                gameController.playRound(row, col);
+                processBoardIntoFlat();
+                populateGrid();
+            }
         }
     })
 
     const button = document.querySelector('#playAgain');
     button.addEventListener('click', ()=> {
+    displayController.setPlayEnabled(true);
     displayController.setGameStateDisplay(`${gameController.getActivePlayer().name} goes first`);
     gameboard.setBoard();
     displayController.processBoardIntoFlat();
@@ -254,7 +259,7 @@ const displayController = (function() {
 })
 
     
-    return { populateGrid, processBoardIntoFlat, setGameStateDisplay, getPlayerName };
+    return { populateGrid, processBoardIntoFlat, setGameStateDisplay, getPlayerName, setPlayEnabled };
 })();
 
 

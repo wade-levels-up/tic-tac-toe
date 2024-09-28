@@ -95,7 +95,7 @@ const gameController = (function() {
 
     function gameOver() {
         if (draw) {
-            displayController.setGameStateDisplay('Game was a draw - No winner');
+            displayController.setGameStateDisplay('Draw!');
             draw = false;
         } else {
             displayController.setGameStateDisplay(`${activePlayer} wins!`);
@@ -104,37 +104,56 @@ const gameController = (function() {
 
     function checkWinCondition() {
         let board = gameboard.getBoard();
+
+
         // Looks through rows for 'xxx' or 'ooo'
-        for (row in board) {
-            if ((board[row][0].getValue() === 'x' && board[row][1].getValue() === 'x' && board[row][2].getValue() === 'x')
-                || (board[row][0].getValue() === 'o' && board[row][1].getValue() === 'o' && board[row][2].getValue() === 'o')) 
-            {
-                gameOver(); roundOver = true; 
+        function checkRows() {
+            for (row in board) {
+                if ((board[row][0].getValue() === 'x' && board[row][1].getValue() === 'x' && board[row][2].getValue() === 'x')
+                    || (board[row][0].getValue() === 'o' && board[row][1].getValue() === 'o' && board[row][2].getValue() === 'o')) 
+                {
+                    gameOver(); roundOver = true; 
+                }
             }
         }
+        checkRows();
+  
         // Looks through columns for 'xxx' or 'ooo'
-        for (let i = 0; i < 3; i++) {
-            if ((board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x')
-                || (board[0][i].getValue() === 'o' && board[1][i].getValue() === 'o' && board[2][i].getValue() === 'o')) {
-                gameOver(); ; roundOver = true; 
+        function checkCols() {
+            for (let i = 0; i < 3; i++) {
+                if ((board[0][i].getValue() === 'x' && board[1][i].getValue() === 'x' && board[2][i].getValue() === 'x')
+                    || (board[0][i].getValue() === 'o' && board[1][i].getValue() === 'o' && board[2][i].getValue() === 'o')) {
+                    gameOver(); 
+                    roundOver = true;
+                }
             }
         }
+        checkCols();
+     
 
         // Looks for diagonal win conditions
-        switch (true) {
-            case (board[0][0].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][2].getValue() === 'x'):
-                gameOver(); ; roundOver = true; 
-                break
-            case (board[0][2].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][0].getValue() === 'x'):
-                gameOver(); ; roundOver = true; 
-                break
-            case (board[0][0].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][2].getValue() === 'o'):
-                gameOver(); ; roundOver = true; 
-                break
-            case (board[0][2].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][0].getValue() === 'o'):
-                gameOver(); ; roundOver = true; 
-                break
+        function checkDiags(){
+            switch (true) {
+                case (board[0][0].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][2].getValue() === 'x'):
+                    roundOver = true;
+                    gameOver();  
+                    break
+                case (board[0][2].getValue() ==='x' && board[1][1].getValue() === 'x' && board[2][0].getValue() === 'x'):
+                     roundOver = true;
+                    gameOver();  
+                    break
+                case (board[0][0].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][2].getValue() === 'o'):
+                    roundOver = true;
+                    gameOver(); 
+                    break
+                case (board[0][2].getValue() ==='o' && board[1][1].getValue() === 'o' && board[2][0].getValue() === 'o'):
+                     roundOver = true;
+                    gameOver();  
+                    break
+            }
         }
+        checkDiags()
+ 
 
         // Check for draw
         let mappedBoard = gameboard.getBoard().map((row) => {
@@ -142,7 +161,7 @@ const gameController = (function() {
             return mappedRow;
         })
         let flatBoard = mappedBoard.flat();
-        if (!flatBoard.includes(0)) {
+        if (!flatBoard.includes(0) && roundOver === false) {
             draw = true;
             roundOver = true;
             gameOver();

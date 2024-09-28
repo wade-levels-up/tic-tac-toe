@@ -12,7 +12,16 @@
     font-size: 16px;
 }
 
-* { list-style: none; padding: 0; margin: 0; box-sizing: border-box;}
+* { list-style: none; padding: 0; margin: 0; box-sizing: border-box; text-decoration: none;}
+
+svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+a {
+    color: black
+}
 
 h1 {
     font-size: 4rem;
@@ -70,6 +79,13 @@ footer {
     border-top: 3px ridge black;
     width: 100%;
     text-align: center;
+}
+
+footer p, a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
 }
 
 .cell {
